@@ -5,7 +5,16 @@ import useFetch from "../utils/useFetch";
 import axios from "axios";
 
 const Navbar = ({ user }) => {
-  const { error, isPending, data } = useFetch("http://localhost:3000/user/me");
+  const url = import.meta.env.VITE_APP_API_URL;
+  const { error, isPending, data } = useFetch(`${url}/user/me`);
+
+  const getAvatar = (name) => {
+    const getArray = name.split(" ");
+    const initials = getArray.map((part) => part.charAt(0));
+
+    return initials.join("");
+  };
+
   return (
     <nav className="navbar p-3">
       <div className=" flex-1 navbar-start">
@@ -36,11 +45,21 @@ const Navbar = ({ user }) => {
             role="button"
             className="btn btn-ghost btn-circle avatar"
           >
-            <div className="w-10 rounded-full">
-              {data && (
-                <img alt="Tailwind CSS Navbar component" src={data.photoURL} />
-              )}
-            </div>
+            {data && (
+              <>
+                {data?.photoURL ? (
+                  <div className="w-10 rounded-full">
+                    <img src={data.photoURL} />
+                  </div>
+                ) : (
+                  <div className="avatar placeholder">
+                    <div className="bg-contain text-neutral-content rounded-full w-10">
+                      <span>{getAvatar(data.name)}</span>
+                    </div>
+                  </div>
+                )}
+              </>
+            )}
           </div>
           <ul
             tabIndex={0}

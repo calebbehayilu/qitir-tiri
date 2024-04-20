@@ -1,9 +1,12 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { FaUser } from "react-icons/fa";
+import { IoMdMail } from "react-icons/io";
+import { IoKey } from "react-icons/io5";
 
 const Signup = () => {
-  const history = useNavigate();
+  const url = import.meta.env.VITE_APP_API_URL;
 
   const [user, setUser] = useState({
     name: "",
@@ -11,32 +14,51 @@ const Signup = () => {
     password: "",
     confirm_password: "",
   });
-  const [error, setError] = useState(false);
+  const [error, setError] = useState();
+  const [isLoading, setIsLoading] = useState(false);
+
   const signUp = async (user) => {
-    const post = await axios.post("http://localhost:3000/user", {
-      name: user.name,
-      email: user.email,
-      password: user.password,
-    });
+    const post = await axios
+      .post(`${url}/user`, {
+        name: user.name,
+        email: user.email,
+        password: user.password,
+      })
+      .catch((err) => {
+        return err;
+      });
 
     return post;
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (
+      user.name == "" ||
+      user.password == "" ||
+      user.email == "" ||
+      user.confirm_password == ""
+    )
+      return setError("Error! Inputs cant be empty.");
 
-    if (user.password !== user.confirm_password) return setError(true);
+    if (user.password !== user.confirm_password)
+      return setError("Error! Password not same.");
+
+    setIsLoading(true);
 
     const response = await signUp(user);
-
-    console.log(response);
+    if (response.status != 200) {
+      setIsLoading(false);
+      return setError(response.response.data);
+    }
     if (response.status == 200) {
       localStorage.setItem("token", response.headers["x-auth-token"]);
+      setIsLoading(false);
       window.location = "/home";
     }
   };
 
   const handleChange = (e) => {
-    setError(false);
+    setError("");
     const { name, value } = e.target;
     setUser({ ...user, [name]: value });
   };
@@ -60,10 +82,11 @@ const Signup = () => {
                   d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
                 />
               </svg>
-              <span>Error! Password not same.</span>
+              <span>{error}</span>
             </div>
           )}
           <label className="input input-bordered flex items-center gap-2">
+            <FaUser />
             <input
               name="name"
               value={user.name}
@@ -74,6 +97,7 @@ const Signup = () => {
             />
           </label>
           <label className="input input-bordered flex items-center gap-2">
+            <IoMdMail />
             <input
               name="email"
               value={user.email}
@@ -85,6 +109,7 @@ const Signup = () => {
           </label>
 
           <label className="input input-bordered flex items-center gap-2">
+            <IoKey />
             <input
               name="password"
               value={user.password}
@@ -106,8 +131,16 @@ const Signup = () => {
             />
           </label>
 
-          <button className="btn btn-primary text-white mt-3" type="submit">
-            SignUp
+          <button
+            className="btn btn-primary text-white btn-outline"
+            type="submit"
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <span className="loading loading-spinner loading-sm"></span>
+            ) : (
+              <>Sign Up</>
+            )}
           </button>
         </form>
       </div>
