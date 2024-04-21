@@ -1,14 +1,15 @@
 import React, { useState } from "react";
 import Error from "../components/error";
 import GoogleSignin from "../components/google-signup";
-import { login } from "../utils/auth.util";
+import { useAuth } from "../utils/auth-provider";
 
 const Login = () => {
+  const { login } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState({
     caught: false,
     cause: "",
   });
-
   const [user, setUser] = useState({
     email: "",
     password: "",
@@ -23,15 +24,18 @@ const Login = () => {
         cause: "Can`t leave the text fileds empty!",
       }));
 
+    setIsLoading(true);
     const res = await login(user);
-    // console.log("login ", res.response.data);
 
     if (res.response.status !== 200) {
+      setIsLoading(false);
+
       return setError((prev) => ({
         caught: true,
         cause: res.response.data,
       }));
     }
+    setIsLoading(false);
   };
 
   const handleChange = (e) => {
@@ -69,8 +73,16 @@ const Login = () => {
             />
           </label>
 
-          <button className="btn btn-primary text-white mt-3" type="submit">
-            Login
+          <button
+            className="btn btn-primary text-white btn-outline"
+            type="submit"
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <span className="loading loading-spinner loading-sm"></span>
+            ) : (
+              <>Login</>
+            )}
           </button>
         </form>
         <span className="divider "></span>

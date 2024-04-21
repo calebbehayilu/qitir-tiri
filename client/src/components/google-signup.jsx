@@ -1,60 +1,22 @@
-import { getRedirectResult, signInWithRedirect } from "firebase/auth";
-import { useEffect, useState } from "react";
-import { auth, provider } from "./../utils/firebase";
-import axios from "axios";
+import { useState } from "react";
+import { useAuth } from "../utils/auth-provider";
 
 const GoogleSignin = () => {
   const [isLoading, setIsLoading] = useState(false);
+  const [user, setUser] = useState();
+  const { GoogleLogin } = useAuth();
 
-  const signUp = async (name, email, uid, photoURL) => {
-    const post = await axios.post(
-      "http://localhost:3000/user/signUp-with-google",
-      {
-        name: name,
-        email: email,
-        uid: uid,
-        photoURL: photoURL,
-      }
-    );
-
-    return post;
-  };
-
-  useEffect(() => {
+  async function googleFunction() {
     setIsLoading(true);
-    getRedirectResult(auth)
-      .then(async (response) => {
-        if (!response) return;
-
-        const res = await signUp(
-          response.user.displayName,
-          response.user.email,
-          response.user.uid,
-          response.user.photoURL
-        );
-
-        if (res.status == 200) {
-          localStorage.setItem("token", res.headers["x-auth-token"]);
-          window.location = "/home";
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-      })
-      .finally(() => setIsLoading(false));
-  }, []);
-
-  const GoogleLogin = async () => {
-    await signInWithRedirect(auth, provider).catch((error) => {
-      console.error(error);
-    });
-  };
+    const res = await GoogleLogin();
+    setUser(res);
+  }
 
   return (
     <button
       className="btn btn-outline w-full"
       disabled={isLoading}
-      onClick={GoogleLogin}
+      onClick={googleFunction}
     >
       {isLoading ? (
         <span className="loading loading-spinner loading-sm"></span>

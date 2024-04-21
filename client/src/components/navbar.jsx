@@ -1,13 +1,11 @@
-import React, { useEffect, useState } from "react";
 import { Link, NavLink } from "react-router-dom";
-import { logout } from "../utils/auth.util";
 import useFetch from "../utils/useFetch";
-import axios from "axios";
+import { useAuth } from "../utils/auth-provider";
 
 const Navbar = ({ user }) => {
   const url = import.meta.env.VITE_APP_API_URL;
   const { error, isPending, data } = useFetch(`${url}/user/me`);
-
+  const { logout } = useAuth();
   const getAvatar = (name) => {
     const getArray = name.split(" ");
     const initials = getArray.map((part) => part.charAt(0));
@@ -53,7 +51,7 @@ const Navbar = ({ user }) => {
                   </div>
                 ) : (
                   <div className="avatar placeholder">
-                    <div className="bg-contain text-neutral-content rounded-full w-10">
+                    <div className="bg-slate-600 text-neutral-content rounded-full w-10">
                       <span>{getAvatar(data.name)}</span>
                     </div>
                   </div>
@@ -75,7 +73,7 @@ const Navbar = ({ user }) => {
               <Link to={"/settings"}>Settings</Link>
             </li>
             <li>
-              <button onClick={() => logout()}>Logout</button>
+              <button onClick={logout}>Logout</button>
             </li>
           </ul>
         </div>

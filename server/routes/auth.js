@@ -22,11 +22,12 @@ route.post("/", async (req, res) => {
   if (!password) return res.status(404).send("Incorrect Email or Password");
 
   const token = await generateToken(user);
+
   res
     .header("x-auth-token", token)
     .header("access-control-expose-headers", "x-auth-token")
 
-    .send("Logged in");
+    .send(user);
 });
 
 async function generateToken(user) {

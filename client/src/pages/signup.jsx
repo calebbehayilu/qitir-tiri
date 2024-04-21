@@ -1,13 +1,12 @@
 import React, { useState } from "react";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
 import { FaUser } from "react-icons/fa";
 import { IoMdMail } from "react-icons/io";
 import { IoKey } from "react-icons/io5";
+import { useAuth } from "../utils/auth-provider";
 
 const Signup = () => {
   const url = import.meta.env.VITE_APP_API_URL;
-
+  const { signUp } = useAuth();
   const [user, setUser] = useState({
     name: "",
     email: "",
@@ -17,19 +16,6 @@ const Signup = () => {
   const [error, setError] = useState();
   const [isLoading, setIsLoading] = useState(false);
 
-  const signUp = async (user) => {
-    const post = await axios
-      .post(`${url}/user`, {
-        name: user.name,
-        email: user.email,
-        password: user.password,
-      })
-      .catch((err) => {
-        return err;
-      });
-
-    return post;
-  };
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (
@@ -50,11 +36,7 @@ const Signup = () => {
       setIsLoading(false);
       return setError(response.response.data);
     }
-    if (response.status == 200) {
-      localStorage.setItem("token", response.headers["x-auth-token"]);
-      setIsLoading(false);
-      window.location = "/home";
-    }
+    setIsLoading(false);
   };
 
   const handleChange = (e) => {
