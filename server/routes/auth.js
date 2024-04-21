@@ -3,7 +3,6 @@ const express = require("express");
 const route = express();
 const bcrypt = require("bcrypt");
 const Joi = require("joi");
-const { _ } = require("lodash");
 const { User } = require("./../Models/Users");
 const auth = require("../middleware/auth");
 
