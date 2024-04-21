@@ -1,11 +1,7 @@
 import React, { useState } from "react";
-import { FaUser } from "react-icons/fa";
-import { IoMdMail } from "react-icons/io";
-import { IoKey } from "react-icons/io5";
 import { useAuth } from "../utils/auth-provider";
 
 const Signup = () => {
-  const url = import.meta.env.VITE_APP_API_URL;
   const { signUp } = useAuth();
   const [user, setUser] = useState({
     name: "",
@@ -68,7 +64,6 @@ const Signup = () => {
             </div>
           )}
           <label className="input input-bordered flex items-center gap-2">
-            <FaUser />
             <input
               name="name"
               value={user.name}
@@ -79,7 +74,6 @@ const Signup = () => {
             />
           </label>
           <label className="input input-bordered flex items-center gap-2">
-            <IoMdMail />
             <input
               name="email"
               value={user.email}
@@ -91,7 +85,6 @@ const Signup = () => {
           </label>
 
           <label className="input input-bordered flex items-center gap-2">
-            <IoKey />
             <input
               name="password"
               value={user.password}
@@ -102,7 +95,6 @@ const Signup = () => {
             />
           </label>
           <label className="input input-bordered flex items-center gap-2">
-            <IoKey />
             <input
               name="confirm_password"
               value={user.confirm_password}
