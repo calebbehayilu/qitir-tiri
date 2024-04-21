@@ -27,21 +27,19 @@ function App() {
   }, []);
   return (
     <>
-      <BrowserRouter>
-        <Navbar user={currentUser} />
-        <Routes>
-          <Route element={<PrivateRoutes check={currentUser} />}>
-            <Route path="/home" element={<Home />} />
-            <Route path="/post" element={<Post />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/settings" element={<Settings />} />
-          </Route>
-          <Route path="/login" element={<Login />} />
-          <Route path="/sign-up" element={<Signup />} />
-          <Route path="/" element={<Welcome />} exact />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
+      <Navbar user={currentUser} />
+      <Routes>
+        <Route element={<PrivateRoutes check={currentUser} />}>
+          <Route path="/home" element={<Home />} />
+          <Route path="/post" element={<Post />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/settings" element={<Settings />} />
+        </Route>
+        <Route path="/login" element={<Login />} />
+        <Route path="/sign-up" element={<Signup />} />
+        <Route path="/" element={<Welcome />} exact />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
     </>
   );
 }
